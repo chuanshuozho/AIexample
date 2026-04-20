@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 智能助手</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/java.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/sql.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/json.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -203,6 +213,115 @@
             color: var(--text-primary);
             border-bottom-left-radius: 18px;
             border-bottom-right-radius: 4px;
+        }
+
+        /* Markdown Styles */
+        .message.assistant .message-content h1,
+        .message.assistant .message-content h2,
+        .message.assistant .message-content h3,
+        .message.assistant .message-content h4 {
+            margin: 16px 0 8px 0;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .message.assistant .message-content h1 { font-size: 24px; }
+        .message.assistant .message-content h2 { font-size: 20px; }
+        .message.assistant .message-content h3 { font-size: 18px; }
+        .message.assistant .message-content h4 { font-size: 16px; }
+
+        .message.assistant .message-content p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .message.assistant .message-content ul,
+        .message.assistant .message-content ol {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+
+        .message.assistant .message-content li {
+            margin: 4px 0;
+            line-height: 1.5;
+        }
+
+        .message.assistant .message-content code {
+            background: rgba(0, 0, 0, 0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 14px;
+        }
+
+        .message.assistant .message-content pre {
+            background: #1d1d1f;
+            color: #f5f5f7;
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .message.assistant .message-content pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.assistant .message-content blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 12px 0;
+            padding: 8px 16px;
+            background: rgba(0, 113, 227, 0.05);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .message.assistant .message-content blockquote p {
+            margin: 0;
+        }
+
+        .message.assistant .message-content strong {
+            font-weight: 600;
+        }
+
+        .message.assistant .message-content em {
+            font-style: italic;
+        }
+
+        .message.assistant .message-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .message.assistant .message-content a:hover {
+            text-decoration: underline;
+        }
+
+        .message.assistant .message-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 16px 0;
+        }
+
+        .message.assistant .message-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+
+        .message.assistant .message-content th,
+        .message.assistant .message-content td {
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .message.assistant .message-content th {
+            background: var(--bg-secondary);
+            font-weight: 600;
         }
 
         /* Input Area */
@@ -426,7 +545,18 @@
             
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
+            
+            if (isUser) {
+                contentDiv.textContent = content;
+            } else {
+                // Render markdown for assistant messages
+                const htmlContent = marked.parse(content);
+                contentDiv.innerHTML = htmlContent;
+                // Highlight code blocks
+                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+            }
             
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(contentDiv);

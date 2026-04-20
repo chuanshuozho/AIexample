@@ -12,7 +12,11 @@ import java.io.IOException;
 @Service
 public class AiService {
 
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(120, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .build();
     private final ObjectMapper mapper = new ObjectMapper();
 
     public String chat(String userMessage) throws IOException {
