@@ -1,0 +1,6 @@
+com\example\ai\config\LlmConfig.class
+com\example\ai\dto\AiResponse.class
+com\example\ai\AiExampleApplication.class
+com\example\ai\dto\AiRequest.class
+com\example\ai\service\AiService.class
+com\example\ai\controller\AiController.class
