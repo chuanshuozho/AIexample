@@ -4,10 +4,10 @@ import com.example.ai.dto.AiRequest;
 import com.example.ai.dto.AiResponse;
 import com.example.ai.service.AiService;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/ai")
+@Controller
 public class AiController {
 
     private final AiService aiService;
@@ -16,9 +16,14 @@ public class AiController {
         this.aiService = aiService;
     }
 
-    @PostMapping("/chat")
-    public AiResponse chat(@RequestBody AiRequest request) {
+    @GetMapping("/")
+    public String index() {
+        return "forward:/index.html";
+    }
 
+    @ResponseBody
+    @PostMapping("/ai/chat")
+    public AiResponse chat(@RequestBody AiRequest request) {
         try {
             String reply = aiService.chat(request.getMessage());
             return new AiResponse(reply);
