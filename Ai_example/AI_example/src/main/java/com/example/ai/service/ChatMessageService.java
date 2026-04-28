@@ -20,7 +20,21 @@ public class ChatMessageService {
         return chatMessageRepository.save(message);
     }
 
+    public ChatMessage saveMessage(Long sessionId, String userMessage, String assistantReply) {
+        ChatMessage message = new ChatMessage(userMessage, assistantReply);
+        message.setSessionId(sessionId);
+        return chatMessageRepository.save(message);
+    }
+
     public List<ChatMessage> getAllMessages() {
         return chatMessageRepository.findAllByOrderByCreateTimeAsc();
+    }
+
+    public List<ChatMessage> getMessagesBySessionId(Long sessionId) {
+        return chatMessageRepository.findBySessionIdOrderByCreateTimeAsc(sessionId);
+    }
+
+    public void deleteMessagesBySessionId(Long sessionId) {
+        chatMessageRepository.deleteBySessionId(sessionId);
     }
 }

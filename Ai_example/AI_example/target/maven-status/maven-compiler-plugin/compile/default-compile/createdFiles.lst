@@ -1,6 +1,12 @@
+com\example\ai\repository\ChatMessageRepository.class
+com\example\ai\service\ConversationSessionService.class
 com\example\ai\config\LlmConfig.class
 com\example\ai\dto\AiResponse.class
-com\example\ai\AiExampleApplication.class
 com\example\ai\dto\AiRequest.class
-com\example\ai\service\AiService.class
+com\example\ai\service\ChatMessageService.class
+com\example\ai\repository\ConversationSessionRepository.class
 com\example\ai\controller\AiController.class
+com\example\ai\entity\ConversationSession.class
+com\example\ai\AiExampleApplication.class
+com\example\ai\entity\ChatMessage.class
+com\example\ai\service\AiService.class

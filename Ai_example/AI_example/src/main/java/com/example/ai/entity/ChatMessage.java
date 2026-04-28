@@ -11,11 +11,17 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "conversation_id")
+    private String conversationId;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String userMessage;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String assistantReply;
+
+    @Column(name = "session_id")
+    private Long sessionId;
 
     @Column(nullable = false)
     private LocalDateTime createTime;
@@ -29,6 +35,12 @@ public class ChatMessage {
     public ChatMessage() {}
 
     public ChatMessage(String userMessage, String assistantReply) {
+        this.userMessage = userMessage;
+        this.assistantReply = assistantReply;
+    }
+
+    public ChatMessage(String conversationId, String userMessage, String assistantReply) {
+        this.conversationId = conversationId;
         this.userMessage = userMessage;
         this.assistantReply = assistantReply;
     }
@@ -64,5 +76,21 @@ public class ChatMessage {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
     }
 }

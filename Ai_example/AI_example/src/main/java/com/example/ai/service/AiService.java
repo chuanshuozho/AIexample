@@ -21,11 +21,11 @@ public class AiService {
 
     public String chat(String userMessage) throws IOException {
         String bodyJson = "{\n" +
-                "  \"model\": \"deepseek-chat\",\n" +
+                "  \"model\": \"deepseek-v4-flash\",\n" +
                 "  \"messages\": [\n" +
                 "    {\n" +
                 "      \"role\": \"system\",\n" +
-                "      \"content\": \"你是一个服装专业客服助手，请简洁回答\"\n" +
+                "      \"content\": \"你是一个全能AI助手，能够回答各类问题，包括编程、写作、翻译、数学、科学、生活常识等。请用专业、清晰、友好的方式回答用户的问题。\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "      \"role\": \"user\",\n" +

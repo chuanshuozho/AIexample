@@ -1,6 +1,12 @@
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\AiExampleApplication.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\config\LlmConfig.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\AiService.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\ConversationSessionService.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\dto\AiResponse.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\repository\ChatMessageRepository.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\dto\AiRequest.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\ChatMessageService.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\repository\ConversationSessionRepository.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\entity\ConversationSession.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\controller\AiController.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\entity\ChatMessage.java
