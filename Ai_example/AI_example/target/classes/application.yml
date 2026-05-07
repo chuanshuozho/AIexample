@@ -59,8 +59,7 @@ app:
     embedding-cache-size: 1000
     retrieval:
       top-k: ${APP_KNOWLEDGE_RETRIEVAL_TOP_K:3}
-      similarity-threshold: ${APP_KNOWLEDGE_RETRIEVAL_SIMILARITY_THRESHOLD:0.5}
-      max-context-tokens: ${APP_KNOWLEDGE_MAX_CONTEXT_TOKENS:1000}  # 最大上下文 Token 数（降低以减少消耗）
+      similarity-threshold: ${APP_KNOWLEDGE_RETRIEVAL_SIMILARITY_THRESHOLD:0.7}
     storage-path: ${APP_KNOWLEDGE_STORAGE_PATH:${user.home}/ai-knowledge/uploads}
     # OCR 配置
     ocr:
