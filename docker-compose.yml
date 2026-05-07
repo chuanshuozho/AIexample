@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: ai-chat-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ai_chat
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./Ai_example/AI_example/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - ai-chat-network
+
+  # Spring Boot Application
+  app:
+    build:
+      context: ./Ai_example/AI_example
+      dockerfile: Dockerfile
+    container_name: ai-chat-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ai_chat?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      
+      # DeepSeek API Configuration
+      SPRING_AI_OPENAI_API_KEY: ${DEEPSEEK_API_KEY:-your-api-key}
+      SPRING_AI_OPENAI_BASE_URL: https://api.deepseek.com
+      
+      # Knowledge Base Configuration
+      APP_KNOWLEDGE_STORAGE_PATH: /app/uploads/knowledge
+      APP_KNOWLEDGE_MAX_FILE_SIZE: 10485760
+      APP_KNOWLEDGE_CHUNK_SIZE: 500
+      APP_KNOWLEDGE_CHUNK_OVERLAP: 50
+      APP_KNOWLEDGE_RETRIEVAL_TOP_K: 3
+      APP_KNOWLEDGE_RETRIEVAL_SIMILARITY_THRESHOLD: 0.7
+      
+      # JVM Options
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    ports:
+      - "8081:8081"
+    volumes:
+      - uploads_data:/app/uploads/knowledge
+    networks:
+      - ai-chat-network
+
+volumes:
+  mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  ai-chat-network:
+    driver: bridge

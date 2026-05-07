@@ -3,6 +3,8 @@ package com.example.ai.service;
 import com.example.ai.config.LlmConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import okhttp3.*;
 
 import org.springframework.stereotype.Service;
@@ -20,20 +22,22 @@ public class AiService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public String chat(String userMessage) throws IOException {
-        String bodyJson = "{\n" +
-                "  \"model\": \"deepseek-v4-flash\",\n" +
-                "  \"messages\": [\n" +
-                "    {\n" +
-                "      \"role\": \"system\",\n" +
-                "      \"content\": \"你是一个全能AI助手，能够回答各类问题，包括编程、写作、翻译、数学、科学、生活常识等。请用专业、清晰、友好的方式回答用户的问题。\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"role\": \"user\",\n" +
-                "      \"content\": \"" + userMessage.replace("\"", "\\\"").replace("\n", "\\n") + "\"\n" +
-                "    }\n" +
-                "  ],\n" +
-                "  \"temperature\": 0.7\n" +
-                "}";
+        // 使用 ObjectMapper 构建 JSON，正确处理特殊字符转义
+        ObjectNode requestBody = mapper.createObjectNode();
+        requestBody.put("model", "deepseek-v4-flash");
+        requestBody.put("temperature", 0.7);
+        requestBody.put("max_tokens", 2000); // 限制输出 Token 数量，减少消耗
+
+        ArrayNode messages = requestBody.putArray("messages");
+        ObjectNode systemMsg = messages.addObject();
+        systemMsg.put("role", "system");
+        systemMsg.put("content", "你是AI助手，请简洁专业地回答问题。"); // 简化系统提示词
+
+        ObjectNode userMsg = messages.addObject();
+        userMsg.put("role", "user");
+        userMsg.put("content", userMessage);
+
+        String bodyJson = mapper.writeValueAsString(requestBody);
 
         RequestBody body = RequestBody.create(
                 bodyJson,

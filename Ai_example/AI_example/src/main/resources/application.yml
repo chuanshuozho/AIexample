@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: AI_example
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/ai_chat?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:121506}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+
+  # Spring AI Configuration (using OpenAI-compatible API with DeepSeek)
+  ai:
+    openai:
+      api-key: ${SPRING_AI_OPENAI_API_KEY:${DEEPSEEK_API_KEY:sk-your-api-key}}
+      base-url: ${SPRING_AI_OPENAI_BASE_URL:https://api.deepseek.com}
+      chat:
+        enabled: true
+        options:
+          model: deepseek-chat
+          temperature: 0.7
+      embedding:
+        enabled: true
+        options:
+          model: deepseek-embedding
+
+server:
+  port: 8081
+
+# JVM Memory Settings (add to startup command: -Xmx512m -Xms256m)
+# For large documents, consider: -Xmx1g -Xms512m
+
+# Actuator Configuration for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Knowledge Base Configuration
+app:
+  knowledge:
+    max-file-size: ${APP_KNOWLEDGE_MAX_FILE_SIZE:5242880}  # 5MB，限制文件大小防止内存溢出
+    chunk-size: ${APP_KNOWLEDGE_CHUNK_SIZE:500}
+    chunk-overlap: ${APP_KNOWLEDGE_CHUNK_OVERLAP:50}
+    batch-size: ${APP_KNOWLEDGE_BATCH_SIZE:10}  # 分批处理大小
+    embedding-cache-size: 1000
+    retrieval:
+      top-k: ${APP_KNOWLEDGE_RETRIEVAL_TOP_K:3}
+      similarity-threshold: ${APP_KNOWLEDGE_RETRIEVAL_SIMILARITY_THRESHOLD:0.5}
+      max-context-tokens: ${APP_KNOWLEDGE_MAX_CONTEXT_TOKENS:2000}  # 最大上下文 Token 数
+    storage-path: ${APP_KNOWLEDGE_STORAGE_PATH:${user.home}/ai-knowledge/uploads}
+    # OCR 配置
+    ocr:
+      enabled: ${APP_KNOWLEDGE_OCR_ENABLED:true}  # 启用 OCR
+      datapath: ${APP_KNOWLEDGE_OCR_DATAPATH:}  # Tesseract 数据路径，留空则自动检测
+      language: ${APP_KNOWLEDGE_OCR_LANGUAGE:chi_sim+eng}  # 中文+英文
+
+# JVM Memory Optimization (add to startup command)
+# java -Xms512m -Xmx2048m -XX:+UseG1GC -jar your-application.jar

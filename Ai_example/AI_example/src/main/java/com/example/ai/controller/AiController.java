@@ -73,8 +73,14 @@ public class AiController {
                 chatMessageService.saveMessage(request.getMessage(), reply);
             }
 
-            return ResponseEntity.ok(new AiResponse(reply, sessionId));
+            AiResponse response = new AiResponse(reply, sessionId);
+            System.out.println("=== Chat Response ===");
+            System.out.println("Reply length: " + (reply != null ? reply.length() : "null"));
+            System.out.println("Reply preview: " + (reply != null && reply.length() > 100 ? reply.substring(0, 100) + "..." : reply));
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
+            System.err.println("=== Chat Error ===");
+            e.printStackTrace();
             return ResponseEntity.ok(new AiResponse("调用失败: " + e.getMessage()));
         }
     }
