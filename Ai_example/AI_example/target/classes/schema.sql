@@ -38,3 +38,17 @@ CREATE TABLE IF NOT EXISTS vector_embeddings (
     INDEX idx_chunk_id (chunk_id),
     FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Conversation Summaries Table (for conversation distillation)
+CREATE TABLE IF NOT EXISTS conversation_summaries (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    session_id BIGINT NOT NULL UNIQUE,
+    summary TEXT NOT NULL,
+    last_message_id BIGINT,
+    original_token_count INT,
+    summary_token_count INT,
+    create_time DATETIME NOT NULL,
+    update_time DATETIME NOT NULL,
+    INDEX idx_session_id (session_id),
+    FOREIGN KEY (session_id) REFERENCES conversation_sessions(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

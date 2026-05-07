@@ -5,10 +5,14 @@ D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\impl\RAG
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\repository\ChatMessageRepository.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\impl\DocumentServiceImpl.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\dto\RAGRequest.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\repository\ConversationSummaryRepository.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\dto\SourceReference.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\ConversationDistillationService.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\ConversationSessionService.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\impl\ConversationDistillationServiceImpl.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\dto\RetrievalResult.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\dto\AiRequest.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\entity\ConversationSummary.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\ChatMessageService.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\DocumentService.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\entity\DocumentChunk.java
@@ -31,6 +35,7 @@ D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\entity\Knowledge
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\service\EmbeddingService.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\dto\RAGResponse.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\config\LlmConfig.java
+D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\config\DistillationConfig.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\repository\ConversationSessionRepository.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\repository\KnowledgeDocumentRepository.java
 D:\AIexample\Ai_example\AI_example\src\main\java\com\example\ai\controller\AiController.java

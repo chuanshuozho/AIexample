@@ -5,6 +5,7 @@ import com.example.ai.dto.RetrievalResult;
 import com.example.ai.dto.SourceReference;
 import com.example.ai.entity.ChatMessage;
 import com.example.ai.service.ChatMemoryService;
+import com.example.ai.service.ConversationDistillationService;
 import com.example.ai.service.RAGService;
 import com.example.ai.service.RetrievalService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +27,7 @@ public class RAGServiceImpl implements RAGService {
     
     private final ChatMemoryService chatMemoryService;
     private final RetrievalService retrievalService;
+    private final ConversationDistillationService distillationService;
     private final OkHttpClient httpClient;
     private final ObjectMapper objectMapper;
     
@@ -50,9 +52,12 @@ public class RAGServiceImpl implements RAGService {
     private static final String SYSTEM_PROMPT = "你是AI助手，请基于知识库内容回答问题，没有相关信息请说明。回答简洁专业。";
     
     @Autowired
-    public RAGServiceImpl(ChatMemoryService chatMemoryService, RetrievalService retrievalService) {
+    public RAGServiceImpl(ChatMemoryService chatMemoryService, 
+                          RetrievalService retrievalService,
+                          ConversationDistillationService distillationService) {
         this.chatMemoryService = chatMemoryService;
         this.retrievalService = retrievalService;
+        this.distillationService = distillationService;
         this.httpClient = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -63,14 +68,17 @@ public class RAGServiceImpl implements RAGService {
     
     @Override
     public RAGResponse chatWithRAG(Long sessionId, String question) {
+        // 使用蒸馏后的历史（如果启用）
+        List<ChatMessage> history = distillationService.getHistoryWithDistillation(sessionId);
+        
         // 搜索知识库（限制结果数量）
         List<RetrievalResult> retrievalResults = retrievalService.search(question, maxContextChunks, 0.5);
         
         // 构建上下文（限制 Token 数量）
         String context = buildContext(retrievalResults);
         
-        // 调用 API（使用正确的消息格式）
-        String reply = callChatApiWithContext(question, context);
+        // 调用 API（使用正确的消息格式，包含历史）
+        String reply = callChatApiWithContext(question, context, history);
         
         // 保存消息
         if (sessionId != null) {
@@ -124,7 +132,7 @@ public class RAGServiceImpl implements RAGService {
     /**
      * 使用正确的 API 格式调用，减少 Token 消耗
      */
-    private String callChatApiWithContext(String question, String context) {
+    private String callChatApiWithContext(String question, String context, List<ChatMessage> history) {
         String url = baseUrl + "/v1/chat/completions";
         
         try {
@@ -145,7 +153,29 @@ public class RAGServiceImpl implements RAGService {
             }
             systemMsg.put("content", systemContent);
             
-            // 2. 用户问题
+            // 2. 添加历史消息（蒸馏后的历史，可能包含摘要）
+            if (history != null && !history.isEmpty()) {
+                for (ChatMessage msg : history) {
+                    // 检查是否是摘要消息
+                    if ("[历史对话摘要]".equals(msg.getUserMessage())) {
+                        // 摘要作为系统消息的一部分
+                        ObjectNode summaryMsg = messages.addObject();
+                        summaryMsg.put("role", "system");
+                        summaryMsg.put("content", "历史对话摘要：" + msg.getAssistantReply());
+                    } else {
+                        // 常规历史消息
+                        ObjectNode historyUserMsg = messages.addObject();
+                        historyUserMsg.put("role", "user");
+                        historyUserMsg.put("content", msg.getUserMessage());
+                        
+                        ObjectNode historyAssistantMsg = messages.addObject();
+                        historyAssistantMsg.put("role", "assistant");
+                        historyAssistantMsg.put("content", msg.getAssistantReply());
+                    }
+                }
+            }
+            
+            // 3. 用户问题
             ObjectNode userMsg = messages.addObject();
             userMsg.put("role", "user");
             userMsg.put("content", question);

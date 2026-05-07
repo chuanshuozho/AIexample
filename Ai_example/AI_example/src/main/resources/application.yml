@@ -68,5 +68,13 @@ app:
       datapath: ${APP_KNOWLEDGE_OCR_DATAPATH:}  # Tesseract 数据路径，留空则自动检测
       language: ${APP_KNOWLEDGE_OCR_LANGUAGE:chi_sim+eng}  # 中文+英文
 
+# Conversation Distillation Configuration
+  distillation:
+    enabled: ${APP_DISTILLATION_ENABLED:true}
+    token-threshold: ${APP_DISTILLATION_TOKEN_THRESHOLD:4000}  # Token threshold to trigger distillation
+    preserve-recent-pairs: ${APP_DISTILLATION_PRESERVE_RECENT_PAIRS:3}  # Number of recent Q&A pairs to preserve
+    max-summary-tokens: ${APP_DISTILLATION_MAX_SUMMARY_TOKENS:500}  # Max tokens for generated summary
+    summary-model: ${APP_DISTILLATION_SUMMARY_MODEL:deepseek-chat}  # Model to use for summarization
+
 # JVM Memory Optimization (add to startup command)
 # java -Xms512m -Xmx2048m -XX:+UseG1GC -jar your-application.jar
